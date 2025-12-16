@@ -1,0 +1,168 @@
+﻿@model VR.MVC.ViewModels.FabricanteVeiculoViewModel
+@{
+    ViewBag.Title = "Novo Fabricante de Veículo";
+}
+
+<h2 class="page-header">
+    <i class="glyphicon glyphicon-plus"></i> Novo Fabricante
+</h2>
+
+@using (Html.BeginForm("Create", "FabricanteVeiculo", FormMethod.Post, new { @class = "form-horizontal", role = "form" }))
+{
+    @Html.AntiForgeryToken()
+
+    <div class="panel panel-primary">
+        <div class="panel-heading">
+            <h3 class="panel-title">Dados do Fabricante</h3>
+        </div>
+        <div class="panel-body">
+
+            @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+
+            <div class="form-group">
+                @Html.LabelFor(m => m.Nome, new { @class = "col-md-2 control-label" })
+                <div class="col-md-6">
+                    @Html.TextBoxFor(m => m.Nome, new { @class = "form-control", placeholder = "Ex: Toyota" })
+                    @Html.ValidationMessageFor(m => m.Nome, "", new { @class = "text-danger" })
+                </div>
+            </div>
+
+            <div class="form-group">
+                @Html.LabelFor(m => m.Pais, new { @class = "col-md-2 control-label" })
+                <div class="col-md-6">
+                    @Html.TextBoxFor(m => m.Pais, new { @class = "form-control", placeholder = "Ex: Japão" })
+                    @Html.ValidationMessageFor(m => m.Pais, "", new { @class = "text-danger" })
+                </div>
+            </div>
+
+            <div class="form-group">
+                @Html.LabelFor(m => m.Telefone, new { @class = "col-md-2 control-label" })
+                <div class="col-md-4">
+                    @Html.TextBoxFor(m => m.Telefone, new
+                    {
+                    @class = "form-control telefone",
+                    placeholder = "(11) 98765-4321",
+                    maxlength = "15",
+                    type = "tel",
+                    id = "Telefone"
+                })
+
+                    @Html.ValidationMessageFor(m => m.Telefone, "", new { @class = "text-danger" })
+                </div>
+            </div>
+
+            <div class="form-group">
+                @Html.LabelFor(m => m.Email, new { @class = "col-md-2 control-label" })
+                <div class="col-md-6">
+                    @Html.TextBoxFor(m => m.Email, new { @class = "form-control", type = "email" })
+                    @Html.ValidationMessageFor(m => m.Email, "", new { @class = "text-danger" })
+                </div>
+            </div>
+
+            <div class="form-group">
+                @Html.LabelFor(m => m.AnoFundacao, new { @class = "col-md-2 control-label" })
+                <div class="col-md-4">
+                    @Html.TextBoxFor(m => m.AnoFundacao, new { @class = "form-control", type = "date" })
+                    @Html.ValidationMessageFor(m => m.AnoFundacao, "", new { @class = "text-danger" })
+                </div>
+            </div>
+
+            <div class="form-group">
+                @Html.LabelFor(m => m.Website, new { @class = "col-md-2 control-label" })
+                <div class="col-md-6">
+                    @Html.TextBoxFor(m => m.Website, new { @class = "form-control", placeholder = "https://www.toyota.com.br" })
+                    @Html.ValidationMessageFor(m => m.Website, "", new { @class = "text-danger" })
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="panel panel-info">
+        <div class="panel-heading">
+            <h3 class="panel-title">Endereço da Sede</h3>
+        </div>
+        <div class="panel-body">
+
+            <div class="form-group">
+                @Html.LabelFor(m => m.Endereco.Cep, new { @class = "col-md-2 control-label" })
+                <div class="col-md-3">
+                    <div class="input-group">
+                        @Html.TextBoxFor(m => m.Endereco.Cep, new { @class = "form-control cep", placeholder = "00000000", maxlength = "8" })
+                    </div>
+                    @Html.ValidationMessageFor(m => m.Endereco.Cep, "", new { @class = "text-danger" })
+                </div>
+            </div>
+
+            <div class="form-group">
+                @Html.LabelFor(m => m.Endereco.Rua, new { @class = "col-md-2 control-label" })
+                <div class="col-md-8">
+                    @Html.TextBoxFor(m => m.Endereco.Rua, new { @class = "form-control", @readonly = "readonly" })
+                </div>
+            </div>
+
+            <div class="form-group">
+                @Html.LabelFor(m => m.Endereco.Cidade, new { @class = "col-md-2 control-label" })
+                <div class="col-md-6">
+                    @Html.TextBoxFor(m => m.Endereco.Cidade, new { @class = "form-control", @readonly = "readonly" })
+                </div>
+            </div>
+
+            <div class="form-group">
+                @Html.LabelFor(m => m.Endereco.Estado, new { @class = "col-md-2 control-label" })
+                <div class="col-md-2">
+                    @Html.TextBoxFor(m => m.Endereco.Estado, new { @class = "form-control", @readonly = "readonly", style = "width:100%" })
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <div class="form-group">
+        <div class="col-md-offset-2 col-md-10">
+            <button type="submit" class="btn btn-success btn-lg">
+                <i class="glyphicon glyphicon-save"></i> Salvar Fabricante
+            </button>
+            @Html.ActionLink("Cancelar", "Index", null, new { @class = "btn btn-default btn-lg" })
+        </div>
+    </div>
+}
+
+@section scripts {
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.mask/1.14.16/jquery.mask.min.js"></script>
+
+    <script>
+        $(document).ready(function () {
+
+            $('#Telefone').mask('(00) 00000-0000');
+
+            $('form').on('submit', function () {
+                var raw = $('#Telefone').val() || '';
+                raw = raw.replace(/\D/g, '');
+                $('#Telefone').val(raw);
+            });
+
+            $("#Endereco_Cep").blur(function () {
+                var cep = $(this).val().replace(/\D/g, '');
+
+                if (cep.length === 8) {
+                    $.getJSON("https://viacep.com.br/ws/" + cep + "/json/", function (dados) {
+                        if (!("erro" in dados)) {
+                            $("#Endereco_Rua").val(dados.logradouro);
+                            $("#Endereco_Cidade").val(dados.localidade);
+                            $("#Endereco_Estado").val(dados.uf);
+                        } else {
+                            alert("CEP não encontrado!");
+                            limparEndereco();
+                        }
+                    });
+                }
+            });
+
+            function limparEndereco() {
+                $("#Endereco_Rua").val("");
+                $("#Endereco_Cidade").val("");
+                $("#Endereco_Estado").val("");
+            }
+        });
+    </script>
+}

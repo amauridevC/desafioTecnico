@@ -1,0 +1,67 @@
+﻿@model IEnumerable<VR.MVC.ViewModels.VeiculoViewModel>
+
+@{
+    ViewBag.Title = "Veiculos cadastrados";
+}
+
+<h2>Veiculos cadastrados</h2>
+
+<p>
+    @Html.ActionLink("Nova veículo", "Create", null, new { @class = "btn btn-success btn-lg" })
+</p>
+<table class="table  table-striped table-hover">
+    <thead class="bg-primary text-white">
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Modelo)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.AnoFabricacao)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Preco)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.TipoDeVeiculo)
+            </th>
+
+            <th>
+                @Html.DisplayNameFor(model => model.FabricanteVeiculoId)
+            </th>
+
+            <th>
+                @Html.DisplayNameFor(model => model.Descricao)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+
+@foreach (var item in Model) {
+    <tr>
+        <td>
+            @Html.DisplayFor(modelItem => item.Modelo)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.AnoFabricacao)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.Preco)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.TipoDeVeiculo)
+        </td>
+        <th>
+            @item.Fabricante.Nome
+        </th>
+        <td>
+            @Html.DisplayFor(modelItem => item.Descricao)
+        </td>
+        <td>
+            @Html.ActionLink("Edit", "Edit", new { id = item.Id }) |
+            @Html.ActionLink("Details", "Details", new { id = item.Id }) |
+            @Html.ActionLink("Delete", "Delete", new { id = item.Id })
+        </td>
+    </tr>
+}
+
+</table>

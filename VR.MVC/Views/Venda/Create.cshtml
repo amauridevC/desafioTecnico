@@ -1,0 +1,138 @@
+﻿@model VR.MVC.ViewModels.VendaViewModel
+@{
+    ViewBag.Title = "Nova Venda";
+}
+
+<div class="row">
+    <div class="col-md-10 col-md-offset-1">
+        <h2 class="page-header text-center">
+            Nova Venda
+        </h2>
+
+        @using (Html.BeginForm("Create", "Venda", FormMethod.Post, new { @class = "form-horizontal", role = "form" }))
+        {
+            @Html.AntiForgeryToken()
+
+            <div class="panel panel-success">
+                <div class="panel-heading">
+                    <h3 class="panel-title">Informações da Venda</h3>
+                </div>
+                <div class="panel-body">
+
+                    @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+
+                    <div class="form-group">
+                        @Html.LabelFor(m => m.FabricanteVeiculoId, "Fabricante", new { @class = "control-label col-md-3" })
+                        <div class="col-md-8">
+                            @Html.DropDownListFor(m => m.FabricanteVeiculoId,
+                                (SelectList)ViewBag.FabricanteVeiculoId,
+                                "-- Selecione o Fabricante --",
+                                new { @class = "form-control", id = "ddlFabricante" })
+                            @Html.ValidationMessageFor(m => m.FabricanteVeiculoId, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        @Html.LabelFor(m => m.VeiculoId, "Veículo Disponível", new { @class = "control-label col-md-3" })
+                        <div class="col-md-8">
+                            @Html.DropDownListFor(m => m.VeiculoId,
+                                (SelectList)ViewBag.VeiculoId,
+                                "-- Selecione o Veículo --",
+                                new { @class = "form-control", id = "ddlVeiculo", disabled = "disabled" })
+                            @Html.ValidationMessageFor(m => m.VeiculoId, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        @Html.LabelFor(m => m.ClienteId, "Cliente", new { @class = "control-label col-md-3" })
+                        <div class="col-md-8">
+                            @Html.DropDownListFor(m => m.ClienteId,
+                                (SelectList)ViewBag.ClienteId,
+                                "-- Selecione o Cliente --",
+                                new { @class = "form-control" })
+                            @Html.ValidationMessageFor(m => m.ClienteId, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        @Html.LabelFor(m => m.DataVenda, new { @class = "control-label col-md-3" })
+                        <div class="col-md-5">
+                            @Html.TextBoxFor(m => m.DataVenda, "{0:yyyy-MM-dd}", new { @class = "form-control", type = "date", max = DateTime.Today.ToString("yyyy-MM-dd") })
+                            @Html.ValidationMessageFor(m => m.DataVenda, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        @Html.LabelFor(m => m.PrecoVenda, new { @class = "control-label col-md-3" })
+                        <div class="col-md-5">
+                            <div class="input-group">
+                                <input type="text"
+                                       id="PrecoVendaDisplay"
+                                       class="form-control text-right"
+                                       placeholder="0,00" />
+                                @Html.HiddenFor(m => m.PrecoVenda, new { id = "PrecoVenda" })
+                            </div>
+
+                            @Html.ValidationMessageFor(m => m.PrecoVenda, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+
+
+
+                </div>
+            </div>
+
+            <div class="form-group">
+                <div class="col-md-offset-3 col-md-9">
+                    <button type="submit" class="btn btn-success btn-lg">
+                        Realizar Venda
+                    </button>
+                    @Html.ActionLink("Cancelar", "Index", null, new { @class = "btn btn-default btn-lg" })
+                </div>
+            </div>
+        }
+    </div>
+</div>
+
+@section scripts {
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.mask/1.14.16/jquery.mask.min.js"></script>
+    <script>
+        $(function () {
+            $("#ddlFabricante").change(function () {
+                var fabricanteId = $(this).val();
+                var $veiculo = $("#ddlVeiculo");
+
+                if (fabricanteId) {
+                    $.getJSON('@Url.Action("VeiculosPorFabricante", "Venda")', { fabricanteId: fabricanteId }, function (data) {
+                        $veiculo.empty()
+                                 .append('<option value="">-- Selecione o Veículo --</option>');
+
+                        $.each(data, function (i, item) {
+                            $veiculo.append('<option value="' + item.id + '">' + item.text + '</option>');
+                        });
+
+                        $veiculo.prop('disabled', false);
+                    });
+                } else {
+                    $veiculo.empty()
+                             .append('<option value="">-- Selecione o Fabricante primeiro --</option>')
+                             .prop('disabled', true);
+                }
+            });
+        });
+
+        $(function () {
+            $('#PrecoVendaDisplay').mask('000.000.000.000,00', { reverse: true });
+            $('form.form-horizontal').on('submit', function () {
+                var display = $('#PrecoVendaDisplay').val(); 
+
+                if (display) {
+                    var raw = display.replace(/\./g, '')
+                    $('#PrecoVenda').val(raw);
+                } else {
+                    $('#PrecoVenda').val('');
+                }
+            });
+        });
+    </script>
+}

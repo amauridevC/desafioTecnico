@@ -1,0 +1,165 @@
+﻿@model VR.MVC.ViewModels.FabricanteVeiculoViewModel
+@{
+    ViewBag.Title = "Editar Fabricante de Veículo";
+}
+
+<h2 class="page-header">Editar Fabricante</h2>
+
+@using (Html.BeginForm("Edit", "FabricanteVeiculo", FormMethod.Post, new { @class = "form-horizontal", role = "form" }))
+{
+    @Html.AntiForgeryToken()
+    @Html.HiddenFor(m => m.Id)
+
+    <div class="panel panel-warning">
+        <div class="panel-heading"><h3 class="panel-title">Dados do Fabricante</h3></div>
+        <div class="panel-body">
+            @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+
+            <div class="form-group">
+                @Html.LabelFor(m => m.Nome, new { @class = "col-md-2 control-label" })
+                <div class="col-md-6">
+                    @Html.TextBoxFor(m => m.Nome, new { @class = "form-control" })
+                    @Html.ValidationMessageFor(m => m.Nome, "", new { @class = "text-danger" })
+                </div>
+            </div>
+
+            <div class="form-group">
+                @Html.LabelFor(m => m.Pais, new { @class = "col-md-2 control-label" })
+                <div class="col-md-6">
+                    @Html.TextBoxFor(m => m.Pais, new { @class = "form-control" })
+                    @Html.ValidationMessageFor(m => m.Pais, "", new { @class = "text-danger" })
+                </div>
+            </div>
+
+            <div class="form-group">
+                @Html.LabelFor(m => m.Telefone, new { @class = "col-md-2 control-label" })
+                <div class="col-md-4">
+                    @Html.TextBoxFor(m => m.Telefone, new
+                    {
+                    @class = "form-control telefone",
+                    placeholder = "(11) 98765-4321",
+                    maxlength = "15",
+                    type = "tel",
+                    id = "Telefone"
+                })
+
+                    @Html.ValidationMessageFor(m => m.Telefone, "", new { @class = "text-danger" })
+                </div>
+            </div>
+
+            <div class="form-group">
+                @Html.LabelFor(m => m.Email, new { @class = "col-md-2 control-label" })
+                <div class="col-md-6">
+                    @Html.TextBoxFor(m => m.Email, new { @class = "form-control", type = "email" })
+                    @Html.ValidationMessageFor(m => m.Email, "", new { @class = "text-danger" })
+                </div>
+            </div>
+
+            <div class="form-group">
+                @Html.LabelFor(m => m.AnoFundacao, new { @class = "col-md-2 control-label" })
+                <div class="col-md-4">
+                    @Html.TextBoxFor(m => m.AnoFundacao, new { @class = "form-control", type = "date", Value = Model.AnoFundacao.ToString("yyyy-MM-dd") })
+                    @Html.ValidationMessageFor(m => m.AnoFundacao, "", new { @class = "text-danger" })
+                </div>
+            </div>
+
+            <div class="form-group">
+                @Html.LabelFor(m => m.Website, new { @class = "col-md-2 control-label" })
+                <div class="col-md-6">
+                    @Html.TextBoxFor(m => m.Website, new { @class = "form-control" })
+                    @Html.ValidationMessageFor(m => m.Website, "", new { @class = "text-danger" })
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="panel panel-info">
+        <div class="panel-heading"><h3 class="panel-title">Endereço da Sede</h3></div>
+        <div class="panel-body">
+            <div class="form-group">
+                @Html.LabelFor(m => m.Endereco.Cep, new { @class = "col-md-2 control-label" })
+                <div class="col-md-3">
+                    <div class="input-group">
+                        @Html.TextBoxFor(m => m.Endereco.Cep, new { @class = "form-control", placeholder = "54440620", maxlength = "8", type = "text" })
+                    </div>
+                    @Html.ValidationMessageFor(m => m.Endereco.Cep, "", new { @class = "text-danger" })
+                </div>
+            </div>
+
+            <div class="form-group">
+                @Html.LabelFor(m => m.Endereco.Rua, new { @class = "col-md-2 control-label" })
+                <div class="col-md-8">
+                    @Html.TextBoxFor(m => m.Endereco.Rua, new { @class = "form-control", @readonly = "readonly" })
+                </div>
+            </div>
+
+            <div class="form-group">
+                @Html.LabelFor(m => m.Endereco.Cidade, new { @class = "col-md-2 control-label" })
+                <div class="col-md-6">
+                    @Html.TextBoxFor(m => m.Endereco.Cidade, new { @class = "form-control", @readonly = "readonly" })
+                </div>
+            </div>
+
+            <div class="form-group">
+                @Html.LabelFor(m => m.Endereco.Estado, new { @class = "col-md-2 control-label" })
+                <div class="col-md-2">
+                    @Html.TextBoxFor(m => m.Endereco.Estado, new { @class = "form-control", @readonly = "readonly" })
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="form-group">
+        <div class="col-md-offset-2 col-md-10">
+            <button type="submit" class="btn btn-success btn-lg">Atualizar Fabricante</button>
+            @Html.ActionLink("Cancelar", "Index", null, new { @class = "btn btn-default btn-lg" })
+        </div>
+    </div>
+}
+
+@section scripts {
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.mask/1.14.16/jquery.mask.min.js"></script>
+
+    <script>
+        $(function () {
+            $("#Endereco_Cep").on("input", function () {
+                this.value = this.value.replace(/\D/g, "").substring(0, 8);
+            });
+
+            $("#Endereco_Cep").blur(function () {
+                var cep = this.value.replace(/\D/g, '');
+                if (cep.length === 8) {
+                    $.getJSON("https://viacep.com.br/ws/" + cep + "/json/", function (d) {
+                        if (!d.erro) {
+                            $("#Endereco_Rua").val(d.logradouro);
+                            $("#Endereco_Cidade").val(d.localidade);
+                            $("#Endereco_Estado").val(d.uf);
+                        } else {
+                            alert("CEP não encontrado");
+                        }
+                    });
+                }
+            });
+        });
+
+        $(function () {
+
+            // 📞 MÁSCARA TELEFONE (9 dígitos)
+            $('#Telefone').mask('(00) 00000-0000');
+
+            // 🔄 se vier só número do backend, aplica máscara no Edit
+            var tel = $('#Telefone').val();
+            if (tel && tel.length === 11) {
+                $('#Telefone').val(tel).mask('(00) 00000-0000');
+            }
+
+            // 🧼 antes de enviar → remove máscara (fica só número)
+            $('form').on('submit', function () {
+                var raw = $('#Telefone').val() || '';
+                raw = raw.replace(/\D/g, '');
+                $('#Telefone').val(raw);
+            });
+
+        });
+    </script>
+}

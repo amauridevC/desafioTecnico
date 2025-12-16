@@ -1,0 +1,111 @@
+﻿@model VR.MVC.ViewModels.ClienteViewModel
+
+@{
+    ViewBag.Title = "Edit";
+}
+
+<h2>Edit</h2>
+
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+
+    <div class="form-horizontal">
+        <h4>ClienteViewModel</h4>
+        <hr />
+        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+        @Html.HiddenFor(model => model.Id)
+
+        <div class="form-group">
+            @Html.LabelFor(m => m.Nome, new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.TextBoxFor(m => m.Nome, new
+                {
+                    @class = "form-control",
+                    placeholder = "Nome do cliente",
+                    pattern = "[A-Za-zÀ-ú\\s]+",
+                    onkeypress = "return event.charCode === 0 || /[A-Za-zÀ-ú\\s]/.test(String.fromCharCode(event.charCode))",
+                    oninvalid = "this.setCustomValidity('Use apenas letras e espaços')",
+                    oninput = "this.setCustomValidity('')"
+                })
+                @Html.ValidationMessageFor(m => m.Nome, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(m => m.Cpf, new { @class = "control-label col-md-2" })
+            <div class="col-md-4">
+                <div class="input-group">
+                    <input type="text"
+                           id="CpfDisplay"
+                           class="form-control"
+                           placeholder="000.000.000-00"
+                           maxlength="14"
+                           inputmode="numeric"
+                           onkeypress="return (event.charCode >= 48 && event.charCode <= 57)" />
+                    @Html.HiddenFor(m => m.Cpf, new { id = "Cpf" })
+
+                </div>
+                @Html.ValidationMessageFor(m => m.Cpf, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+
+        <div class="form-group">
+            @Html.LabelFor(m => m.Telefone, new { @class = "control-label col-md-2" })
+            <div class="col-md-4">
+                <div class="input-group">
+                    <input type="tel"
+                           id="TelefoneDisplay"
+                           class="form-control"
+                           placeholder="(00) 00000-0000"
+                           maxlength="15"
+                           inputmode="numeric"
+                           onkeypress="return (event.charCode >= 48 && event.charCode <= 57)" />
+
+                    @Html.HiddenFor(m => m.Telefone, new { id = "Telefone" })
+
+                </div>
+                @Html.ValidationMessageFor(m => m.Telefone, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+
+        <div class="form-group">
+            <div class="col-md-offset-2 col-md-10">
+                <input type="submit" value="Save" class="btn btn-default" />
+            </div>
+        </div>
+    </div>
+}
+
+<div>
+    @Html.ActionLink("Back to List", "Index")
+</div>
+
+@section Scripts {
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.mask/1.14.16/jquery.mask.min.js"></script>
+
+    <script>
+        $(function () {
+
+            $('#CpfDisplay').mask('000.000.000-00');
+            $('#TelefoneDisplay').mask('(00) 00000-0000');
+
+            var cpf = $('#Cpf').val();
+            if (cpf) {
+                $('#CpfDisplay').val(cpf).trigger('input');
+            }
+
+            var telefone = $('#Telefone').val();
+            if (telefone) {
+                $('#TelefoneDisplay').val(telefone).trigger('input');
+            }
+
+            $('form').on('submit', function () {
+                $('#Cpf').val($('#CpfDisplay').val().replace(/\D/g, ''));
+                $('#Telefone').val($('#TelefoneDisplay').val().replace(/\D/g, ''));
+            });
+        });
+    </script>
+}

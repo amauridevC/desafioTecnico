@@ -1,0 +1,35 @@
+﻿@using Microsoft.AspNet.Identity
+@using System.Security.Claims
+
+@if (Request.IsAuthenticated)
+{
+    var identity = (ClaimsIdentity)User.Identity;
+    var nomeCompleto = identity.FindFirst("NomeCompleto")?.Value ?? User.Identity.GetUserName();
+    var roleDisplay = identity.FindFirst("RoleDisplay")?.Value ?? "Usuário";
+
+    using (Html.BeginForm("LogOff", "Account", FormMethod.Post, new { id = "logoutForm", @class = "navbar-right" }))
+    {
+        @Html.AntiForgeryToken()
+
+        <ul class="navbar-nav navbar-right">
+            <li>
+                @Html.ActionLink($"Olá, {nomeCompleto} ({roleDisplay})!",
+                                 "Index", "Manage", routeValues: null,
+                                 htmlAttributes: new { title = "Manage", @class = "nav-link" })
+            </li>
+            <li>
+                <a class="nav-link" href="javascript:document.getElementById('logoutForm').submit()">Sair</a>
+            </li>
+            @if (User.IsInRole("Administrador"))
+            {
+                <li>@Html.ActionLink("Registrar", "Register", "Account", routeValues: null, htmlAttributes: new { id = "registerLink", @class = "nav-link" })</li>
+            }
+        </ul>
+    }
+}
+else
+{
+    <ul class="navbar-nav navbar-right">
+        <li>@Html.ActionLink("Faça o login", "Login", "Account", routeValues: null, htmlAttributes: new { id = "loginLink", @class = "nav-link" })</li>
+    </ul>
+}

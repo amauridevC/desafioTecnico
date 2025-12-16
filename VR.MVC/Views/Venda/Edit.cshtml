@@ -1,0 +1,163 @@
+﻿@model VR.MVC.ViewModels.VendaViewModel
+
+@{
+    ViewBag.Title = "Editar Venda";
+}
+
+<h2>@ViewBag.Title</h2>
+
+<div class="panel panel-info">
+    <div class="panel-heading"><strong>Valores atuais da venda</strong></div>
+    <div class="panel-body">
+        <div class="row">
+            <div class="col-md-3">
+                <small class="text-muted">Cliente atual</small>
+                <div>@Html.Raw(HttpUtility.HtmlEncode(ViewBag.CurrentClienteNome ?? "(não informado)"))</div>
+            </div>
+            <div class="col-md-3">
+                <small class="text-muted">Veículo atual</small>
+                <div>@Html.Raw(HttpUtility.HtmlEncode(ViewBag.CurrentVeiculoModelo ?? "(não informado)"))</div>
+            </div>
+            <div class="col-md-3">
+                <small class="text-muted">Fabricante atual</small>
+                <div>@Html.Raw(HttpUtility.HtmlEncode(ViewBag.CurrentFabricanteNome ?? "(não informado)"))</div>
+            </div>
+            <div class="col-md-3">
+                <small class="text-muted">Data da venda</small>
+                <div>@Html.Raw(HttpUtility.HtmlEncode(ViewBag.CurrentDataVenda ?? ""))</div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+@using (Html.BeginForm("Edit", "Venda", FormMethod.Post, new { @class = "form-horizontal" }))
+{
+    @Html.AntiForgeryToken()
+    @Html.HiddenFor(model => model.Id)
+
+    <div class="form-horizontal">
+        <hr />
+        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.FabricanteVeiculoId, "Fabricante", htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.DropDownListFor(model => model.FabricanteVeiculoId,
+                    (SelectList)ViewBag.FabricanteVeiculoId,
+                    "-- Selecione o fabricante --",
+                    new { @class = "form-control", id = "FabricanteVeiculoId" })
+                @Html.ValidationMessageFor(model => model.FabricanteVeiculoId, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.VeiculoId, "Veículo", htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.DropDownListFor(model => model.VeiculoId,
+                    (SelectList)ViewBag.VeiculoId,
+                    "-- Selecione o veículo --",
+                    new { @class = "form-control", id = "VeiculoId" })
+                @Html.ValidationMessageFor(model => model.VeiculoId, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.ClienteId, "Cliente", htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.DropDownListFor(model => model.ClienteId,
+                    (SelectList)ViewBag.ClienteId,
+                    "-- Selecione o cliente --",
+                    new { @class = "form-control", id = "ClienteId" })
+                @Html.ValidationMessageFor(model => model.ClienteId, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.DataVenda, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.TextBoxFor(model => model.DataVenda,
+                    "{0:yyyy-MM-dd}",
+                    new { @class = "form-control", type = "date", max = DateTime.Today.ToString("yyyy-MM-dd") })
+                @Html.ValidationMessageFor(model => model.DataVenda, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.PrecoVenda, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                <input type="text"
+                       id="PrecoVendaDisplay"
+                       class="form-control text-right"
+                       placeholder="0,00" />
+                @Html.HiddenFor(model => model.PrecoVenda, new { id = "PrecoVenda" })
+
+                @Html.ValidationMessageFor(model => model.PrecoVenda, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.Protocolo, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.TextBoxFor(model => model.Protocolo, new { @class = "form-control", @readonly = "readonly" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="col-md-offset-2 col-md-10">
+                <input type="submit" value="Salvar" class="btn btn-success" />
+                @Html.ActionLink("Cancelar", "Index", null, new { @class = "btn btn-default ml-2" })
+            </div>
+        </div>
+    </div>
+}
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.mask/1.14.16/jquery.mask.min.js"></script>
+
+    <script>
+        $(document).ready(function () {
+            $('#PrecoVendaDisplay').mask('000.000.000.000,00', { reverse: true });
+
+            var precoServidor = $('#PrecoVenda').val(); 
+            if (precoServidor) {
+                $('#PrecoVendaDisplay').val(precoServidor).trigger('input');
+            }
+
+            $('form.form-horizontal').on('submit', function () {
+                var display = $('#PrecoVendaDisplay').val();
+
+                if (display) {
+                    var raw = display.replace(/\./g, '');
+                    $('#PrecoVenda').val(raw);
+                } else {
+                    $('#PrecoVenda').val('');
+                }
+            });
+
+            function carregarVeiculos(fabricanteId) {
+                var $veiculo = $("#VeiculoId");
+                $veiculo.empty().append('<option value="">-- Selecione o veículo --</option>');
+
+                if (!fabricanteId) return;
+
+                $.getJSON('@Url.Action("VeiculosPorFabricante", "Venda")',
+                    { fabricanteId: fabricanteId },
+                    function (data) {
+                        $.each(data, function (i, item) {
+                            $veiculo.append(
+                                $('<option>').val(item.id).text(item.text)
+                            );
+                        });
+                    });
+            }
+
+            $("#FabricanteVeiculoId").change(function () {
+                carregarVeiculos($(this).val());
+            });
+        });
+    </script>
+}
+
