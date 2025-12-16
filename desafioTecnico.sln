@@ -19,8 +19,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VR.MVC", "VR.MVC\VR.MVC.csp
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VR.Application", "VR.Application\VR.Application.csproj", "{689A8185-D5D2-4DBB-A01A-89F5D6DB24E9}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VR.test", "VR.test\VR.test.csproj", "{6E66929F-4EE4-4A86-94DC-53464FA11197}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -43,10 +41,6 @@ Global
 		{689A8185-D5D2-4DBB-A01A-89F5D6DB24E9}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{689A8185-D5D2-4DBB-A01A-89F5D6DB24E9}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{689A8185-D5D2-4DBB-A01A-89F5D6DB24E9}.Release|Any CPU.Build.0 = Release|Any CPU
-		{6E66929F-4EE4-4A86-94DC-53464FA11197}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{6E66929F-4EE4-4A86-94DC-53464FA11197}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{6E66929F-4EE4-4A86-94DC-53464FA11197}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{6E66929F-4EE4-4A86-94DC-53464FA11197}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
